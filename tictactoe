@@ -1,0 +1,72 @@
+from random import randrange
+
+def display_board(board):
+    print("+-------+-------+-------+")
+    for row in board:
+        print("|       |       |       |")
+        print("|   {}   |   {}   |   {}   |".format(row[0], row[1], row[2]))
+        print("|       |       |       |")
+        print("+-------+-------+-------+")
+
+def enter_move(board):
+    while True:
+        move = int(input("Digite seu movimento: "))
+        row = (move - 1) // 3
+        col = (move - 1) % 3
+        if move < 1 or move > 9 or board[row][col] != str(move):
+            print("Movimento inválido. Tente novamente.")
+        else:
+            board[row][col] = 'O'
+            break
+
+def make_list_of_free_fields(board):
+    free_fields = []
+    for row in range(3):
+        for col in range(3):
+            if board[row][col] != 'X' and board[row][col] != 'O':
+                free_fields.append((row, col))
+    return free_fields
+
+def make_computer_move(board):
+    free_fields = make_list_of_free_fields(board)
+    if len(free_fields) > 0:
+        index = randrange(len(free_fields))
+        row, col = free_fields[index]
+        board[row][col] = 'X'
+
+def check_win(board, symbol):
+    for row in range(3):
+        if board[row][0] == board[row][1] == board[row][2] == symbol:
+            return True
+    for col in range(3):
+        if board[0][col] == board[1][col] == board[2][col] == symbol:
+            return True
+    if board[0][0] == board[1][1] == board[2][2] == symbol:
+        return True
+    if board[0][2] == board[1][1] == board[2][0] == symbol:
+        return True
+    return False
+
+def tic_tac_toe():
+    board = [['1', '2', '3'], ['4', 'X', '6'], ['7', '8', '9']]
+    display_board(board)
+
+    while True:
+        enter_move(board)
+        display_board(board)
+        if check_win(board, 'O'):
+            print("Você ganhou!")
+            break
+
+        make_computer_move(board)
+        display_board(board)
+        if check_win(board, 'X'):
+            print("Você perdeu!")
+            break
+
+        free_fields = make_list_of_free_fields(board)
+        if len(free_fields) == 0:
+            print("Empate!")
+            break
+
+tic_tac_toe()
